@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marijns Verjaardagsbeslisboom</title>
+  <style>
+    :root {
+      --bg: #160f0a;
+      --card: #fff7e8;
+      --card-dark: #2a1810;
+      --orange: #f47b20;
+      --fire: #ffb000;
+      --red: #b83a16;
+      --brown: #4a2a18;
+      --cream: #fff3d6;
+      --muted: #8f7a68;
+      --green: #1f8a43;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255, 176, 0, 0.18), transparent 25%),
+        radial-gradient(circle at 80% 0%, rgba(244, 123, 32, 0.16), transparent 28%),
+        linear-gradient(135deg, #120b07, #2b140b 45%, #160f0a);
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+
+    header {
+      position: relative;
+      z-index: 2;
+      padding: 26px 18px 12px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 28px auto 10px;
+      max-width: 900px;
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      line-height: 1;
+      text-transform: uppercase;
+      text-shadow: 0 6px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 0 auto;
+      color: #ffe2a6;
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .reset-btn {
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #fff7e8;
+      color: #2a1810;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .reset-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .stage {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 20px 16px 80px;
+      overflow: auto;
+    }
+
+    .zoom-shell {
+      width: max-content;
+      min-width: min(100%, 980px);
+      margin: 0 auto;
+      transform-origin: top center;
+      transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 26px;
+      padding: 20px;
+    }
+
+    .node {
+      width: min(92vw, 620px);
+      background: linear-gradient(180deg, #fff9ed, #f7e2bd);
+      color: #24140d;
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 3px solid rgba(255, 176, 0, 0.65);
+      position: relative;
+      animation: pop 0.45s ease both;
+    }
+
+    .node::before {
+      content: "";
+      position: absolute;
+      inset: -10px;
+      border-radius: 32px;
+      background: linear-gradient(120deg, rgba(255, 176, 0, 0.35), transparent, rgba(244, 123, 32, 0.28));
+      z-index: -1;
+      filter: blur(12px);
+    }
+
+    @keyframes pop {
+      from {
+        transform: translateY(18px) scale(0.96);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .node-label {
+      display: inline-block;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: #2a1810;
+      color: #ffd36b;
+      font-size: 0.82rem;
+      margin-bottom: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .question {
+      margin: 0 0 10px;
+      font-size: clamp(1.25rem, 3.5vw, 2rem);
+      line-height: 1.12;
+    }
+
+    .small {
+      color: #6f5845;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .options {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+      margin-top: 22px;
+    }
+
+    .option {
+      min-width: 190px;
+      max-width: 260px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: #fff7e8;
+      color: #2a1810;
+      border: 2px solid rgba(42, 24, 16, 0.12);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+      transition: 0.25s ease;
+      text-align: left;
+    }
+
+    .option:hover {
+      transform: translateY(-4px) rotate(-0.5deg);
+      border-color: var(--orange);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.24);
+    }
+
+    .option-title {
+      display: block;
+      font-size: 1.03rem;
+      margin-bottom: 4px;
+    }
+
+    .option-sub {
+      display: block;
+      color: #7a6553;
+      font-weight: 600;
+      font-size: 0.88rem;
+      line-height: 1.3;
+    }
+
+    .option.chosen {
+      background: linear-gradient(180deg, #ffcb4d, #f47b20);
+      color: #21120a;
+      border-color: #fff2b8;
+    }
+
+    .option.chosen .option-sub {
+      color: #3d220f;
+    }
+
+    .option.ghost {
+      opacity: 0.45;
+      filter: grayscale(0.25);
+    }
+
+    .option.readonly {
+      cursor: default;
+    }
+
+    .option.primary {
+      min-width: 220px;
+      text-align: center;
+    }
+
+    .option.secondary {
+      min-width: 170px;
+    }
+
+    .option.single-choice {
+      min-width: 210px;
+      position: relative;
+    }
+
+    .bonus-option {
+      min-width: 0;
+      min-height: 104px;
+      justify-content: center;
+      text-align: center;
+      padding: 22px 18px;
+    }
+
+    .bonus-option .option-title {
+      justify-content: center;
+      font-size: 1.15rem;
+      gap: 0;
+      margin-bottom: 0;
+      width: 100%;
+    }
+
+    .bonus-option .checkbox-box {
+      display: none;
+    }
+
+    .bonus-option .option-sub {
+      display: none;
+    }
+
+    .gift-option {
+      min-width: 0;
+      min-height: 90px;
+      justify-content: center;
+      text-align: center;
+      padding: 20px 18px;
+    }
+
+    .gift-option .option-title {
+      justify-content: center;
+      margin-bottom: 0;
+      width: 100%;
+      font-size: 1.08rem;
+    }
+
+    .gift-option .checkbox-box {
+      display: none;
+    }
+
+    .gift-option .option-sub {
+      display: none;
+    }
+
+    .option.single-choice.selected,
+    .option.multi-choice.selected {
+      border-color: var(--orange);
+      background: linear-gradient(180deg, #ffcb4d, #f47b20);
+      color: #21120a;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.24);
+    }
+
+    .option.single-choice.selected .option-sub,
+    .option.multi-choice.selected .option-sub {
+      color: #3d220f;
+    }
+
+    .checkbox-box {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 2px solid rgba(42, 24, 16, 0.35);
+      display: inline-grid;
+      place-items: center;
+      margin-right: 10px;
+      flex: 0 0 auto;
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .multi-choice .option-title,
+    .single-choice .option-title {
+      display: flex;
+      align-items: center;
+    }
+
+    .option.selected .checkbox-box {
+      background: #2a1810;
+      border-color: #2a1810;
+    }
+
+    .option.selected .checkbox-box::after {
+      content: "✓";
+      color: #fff3d6;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .action-row {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 11px 16px;
+      border-radius: 999px;
+      background: #2a1810;
+      color: #fff3d6;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .action-btn.alt {
+      background: #fff7e8;
+      color: #2a1810;
+      border: 2px solid rgba(42, 24, 16, 0.12);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .result-box {
+      margin-top: 18px;
+      padding: 20px;
+      border-radius: 18px;
+      background: rgba(255, 247, 232, 0.96);
+      color: #2a1810;
+      border: 2px solid rgba(42, 24, 16, 0.16);
+      line-height: 1.55;
+      font-size: 1.08rem;
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+    }
+
+    .result-box.big {
+      font-size: clamp(3rem, 15vw, 8rem);
+      line-height: 0.9;
+      text-align: center;
+      letter-spacing: 0.08em;
+      padding: 30px 12px;
+      background: linear-gradient(180deg, #fff1c2, #ffcb4d);
+      color: #1f130c;
+      border-color: #f47b20;
+    }
+
+    .turkish {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+    }
+
+    .bonus-grid,
+    .gift-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .bonus-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gift-grid {
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    }
+
+    .gift-option {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .gift-option .option-title {
+      justify-content: center;
+    }
+
+    .scene {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(42, 24, 16, 0.94), rgba(20, 11, 7, 0.96));
+      color: #fff3d6;
+      border: 2px solid rgba(255, 176, 0, 0.42);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      overflow: hidden;
+    }
+
+    .scene-title {
+      margin: 0 0 14px;
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #ffd36b;
+    }
+
+    .globe-wrap {
+      position: relative;
+      width: min(100%, 560px);
+      aspect-ratio: 800 / 520;
+      margin: 0 auto;
+    }
+
+    .globe-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.3));
+    }
+
+    .globe {
+      position: absolute;
+      inset: 18px 34px 18px 34px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.24), transparent 22%),
+        radial-gradient(circle at 42% 34%, rgba(84, 181, 255, 0.82), rgba(22, 79, 134, 0.96) 55%, rgba(11, 35, 61, 1) 100%);
+      box-shadow:
+        inset 0 0 0 3px rgba(255, 255, 255, 0.18),
+        0 18px 34px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .globe::before,
+    .globe::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 24% 30%, rgba(255, 255, 255, 0.14), transparent 18%),
+        radial-gradient(circle at 68% 60%, rgba(255, 255, 255, 0.08), transparent 22%);
+      pointer-events: none;
+    }
+
+    .land {
+      position: absolute;
+      background: linear-gradient(180deg, #b7e08d, #5f9d4f);
+      filter: saturate(1.05);
+      border-radius: 60% 40% 50% 50% / 45% 55% 45% 55%;
+    }
+
+    .land.one {
+      width: 38%;
+      height: 22%;
+      left: 22%;
+      top: 26%;
+      transform: rotate(-14deg);
+    }
+
+    .land.two {
+      width: 26%;
+      height: 18%;
+      left: 58%;
+      top: 34%;
+      transform: rotate(20deg);
+    }
+
+    .land.three {
+      width: 24%;
+      height: 14%;
+      left: 35%;
+      top: 56%;
+      transform: rotate(10deg);
+    }
+
+    .route {
+      position: absolute;
+      left: 12%;
+      top: 28%;
+      width: 70%;
+      height: 28%;
+      border-top: 3px dashed rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      transform: rotate(-12deg);
+      opacity: 0.85;
+    }
+
+    .route-label {
+      position: absolute;
+      top: 8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff3d6;
+      font-size: 0.78rem;
+      font-weight: 800;
+      backdrop-filter: blur(4px);
+    }
+
+    .route-label.amsterdam {
+      left: 16px;
+    }
+
+    .route-label.istanbul {
+      right: 12px;
+    }
+
+    .plane {
+      position: absolute;
+      left: 28%;
+      top: 36%;
+      font-size: 2rem;
+      transform-origin: center center;
+      animation: planeFlight 4.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+    }
+
+    .plane::after {
+      content: "KLM";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.55rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      color: #4fc3ff;
+    }
+
+    @keyframes planeFlight {
+      0% {
+        transform: translate(0, 0) rotate(-18deg) scale(0.95);
+      }
+      18% {
+        transform: translate(-12px, -26px) rotate(-6deg) scale(1);
+      }
+      45% {
+        transform: translate(148px, -60px) rotate(8deg) scale(1.02);
+      }
+      72% {
+        transform: translate(282px, -18px) rotate(18deg) scale(1.04);
+      }
+      100% {
+        transform: translate(402px, 50px) rotate(26deg) scale(1.05);
+      }
+    }
+
+    .fireworks {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      animation: fireworksIn 0.1s linear 4.55s forwards;
+    }
+
+    .burst {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0 18%, #ffcb4d 19%, #ff6b00 45%, transparent 46%);
+      box-shadow: 0 0 20px rgba(255, 176, 0, 0.8);
+      animation: burstPop 0.8s ease-out 4.55s forwards;
+      opacity: 0;
+    }
+
+    .burst.one { left: 24%; top: 24%; }
+    .burst.two { left: 58%; top: 18%; animation-delay: 4.72s; }
+    .burst.three { left: 72%; top: 42%; animation-delay: 4.9s; }
+    .burst.four { left: 48%; top: 54%; animation-delay: 5.05s; }
+
+    @keyframes fireworksIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes burstPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      30% {
+        opacity: 1;
+        transform: scale(1.8);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(2.8);
+      }
+    }
+
+    .flight-message {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 247, 232, 0.96);
+      color: #2a1810;
+      border: 2px solid rgba(42, 24, 16, 0.16);
+      font-size: 1.08rem;
+      font-weight: 800;
+      line-height: 1.5;
+      opacity: 0;
+      animation: flightMessageIn 0.6s ease 4.7s forwards;
+    }
+
+    @keyframes flightMessageIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .terms-shell {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(42, 24, 16, 0.96), rgba(20, 11, 7, 0.98));
+      border: 2px solid rgba(255, 176, 0, 0.42);
+      color: #fff3d6;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .terms-top {
+      position: sticky;
+      top: 10px;
+      z-index: 3;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .terms-top .action-btn {
+      background: #ffcb4d;
+      color: #21120a;
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.25);
+    }
+
+    .terms-intro {
+      display: none;
+    }
+
+    .terms-list {
+      display: grid;
+      gap: 10px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: #f7e2bd;
+    }
+
+    .term-item {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .term-item strong {
+      color: #ffd36b;
+    }
+
+    .signature-area {
+      margin-top: 26px;
+      display: grid;
+      gap: 18px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .signature-arrow {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 900;
+      color: #ffd36b;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .signature-box {
+      width: min(100%, 760px);
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255, 247, 232, 0.96);
+      color: #2a1810;
+      border: 2px solid rgba(42, 24, 16, 0.16);
+    }
+
+    .signature-field {
+      position: relative;
+      width: min(100%, 520px);
+      height: 90px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fffdf7, #ffe7b2);
+      border: 3px dashed #7c5f38;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+      appearance: none;
+    }
+
+    .signature-cross {
+      position: absolute;
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      color: #2a1810;
+      font-weight: 900;
+      opacity: 0.9;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .signature-field::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      color: #2a1810;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .signature-field:hover .signature-cross {
+      opacity: 0;
+    }
+
+    .signature-field:hover::after {
+      content: "GETEKEND";
+      opacity: 1;
+    }
+
+    .celebration {
+      position: relative;
+      margin-top: 18px;
+      min-height: 68vh;
+      border-radius: 28px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 203, 77, 0.26), transparent 22%),
+        radial-gradient(circle at 80% 30%, rgba(255, 120, 40, 0.25), transparent 24%),
+        linear-gradient(180deg, #160f0a, #2a1810 48%, #120b07);
+      border: 2px solid rgba(255, 176, 0, 0.35);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      display: grid;
+      place-items: center;
+      padding: 28px;
+    }
+
+    .celebration::before,
+    .celebration::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 24%, rgba(255, 203, 77, 0.9) 0 3px, transparent 4px),
+        radial-gradient(circle at 30% 46%, rgba(255, 120, 40, 0.9) 0 3px, transparent 4px),
+        radial-gradient(circle at 74% 20%, rgba(255, 255, 255, 0.95) 0 3px, transparent 4px),
+        radial-gradient(circle at 88% 38%, rgba(255, 203, 77, 0.95) 0 3px, transparent 4px),
+        radial-gradient(circle at 62% 68%, rgba(255, 120, 40, 0.9) 0 3px, transparent 4px);
+      animation: confettiDrift 6s linear infinite;
+      opacity: 0.9;
+    }
+
+    .celebration::after {
+      animation-duration: 9s;
+      transform: scale(1.2);
+      opacity: 0.65;
+    }
+
+    @keyframes confettiDrift {
+      from {
+        transform: translateY(-8px);
+      }
+      to {
+        transform: translateY(18px);
+      }
+    }
+
+    .celebration-card {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 760px);
+      text-align: center;
+      padding: 28px 24px;
+      border-radius: 28px;
+      background: rgba(255, 247, 232, 0.96);
+      color: #2a1810;
+      border: 2px solid rgba(42, 24, 16, 0.16);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .celebration-card h2 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 4.2rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .celebration-card p {
+      margin: 18px 0 0;
+      font-size: clamp(1.05rem, 2.6vw, 1.5rem);
+      font-weight: 800;
+      color: #6f5845;
+    }
+
+    .floating-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .flyer {
+      position: absolute;
+      left: -240px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255, 247, 232, 0.92);
+      color: #1f130c;
+      font-weight: 900;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+      animation-name: fly;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      white-space: nowrap;
+      will-change: transform;
+    }
+
+    .flyer.ai {
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .flyer.fun {
+      background: rgba(255, 201, 77, 0.9);
+    }
+
+    .flyer-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex: 0 0 auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .flyer.fun .flyer-icon {
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .flyer-text {
+      display: inline-block;
+      line-height: 1;
+    }
+
+    @keyframes fly {
+      from {
+        transform: translateX(-220px) translateY(0) rotate(0deg);
+      }
+      to {
+        transform: translateX(calc(100vw + 420px)) translateY(var(--wave)) rotate(var(--spin));
+      }
+    }
+
+    .firepit {
+      width: 210px;
+      height: 95px;
+      margin: 32px auto 0;
+      position: relative;
+      opacity: 0.95;
+    }
+
+    .bowl {
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 48px;
+      background: linear-gradient(180deg, #5a3320, #1e1009);
+      border-radius: 0 0 110px 110px;
+      border: 4px solid #8d4b25;
+    }
+
+    .flames {
+      position: absolute;
+      left: 50%;
+      bottom: 38px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .flame {
+      width: 30px;
+      height: 58px;
+      background: linear-gradient(180deg, #fff7a8, #ffb000 45%, #f05a24 80%);
+      border-radius: 50% 50% 45% 45%;
+      transform-origin: bottom center;
+      animation: flicker 0.7s infinite alternate ease-in-out;
+    }
+
+    .flame:nth-child(2) {
+      height: 78px;
+      width: 38px;
+      animation-delay: 0.15s;
+    }
+
+    .flame:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes flicker {
+      from {
+        transform: scaleY(0.9) rotate(-4deg);
+      }
+      to {
+        transform: scaleY(1.08) rotate(5deg);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .zoom-shell {
+        transform: none !important;
+        width: 100%;
+      }
+
+      .tree {
+        padding: 10px 0;
+      }
+
+      .node {
+        width: 94vw;
+      }
+
+      .option {
+        width: 100%;
+        max-width: none;
+      }
+
+      .bonus-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-layer" id="floatingLayer"></div>
+
+  <header>
+    <h1>Marijns Weekendvraagspel</h1>
+
+    <p class="subtitle">
+      Geen boom meer, gewoon vraag voor vraag.
+      Kies steeds één antwoord of meerdere vakjes waar dat mag.
+    </p>
+
+    <div class="firepit" aria-hidden="true">
+      <div class="flames">
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+      </div>
+      <div class="bowl"></div>
+    </div>
+
+    <div class="controls">
+      <button class="reset-btn" onclick="resetTree()">Begin opnieuw</button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="zoom-shell" id="zoomShell">
+      <div class="tree" id="tree"></div>
+    </div>
+  </main>
+
+  <script>
+    const companionNames = ["Tijs", "Wouter", "Twan"];
+    const bonusNames = ["Tijs", "Wouter", "Twan", "Marijn"];
+    const cityOptions = [
+      "Papendrecht",
+      "Boxtel",
+      "Heerenveen",
+      "Sexbierum",
+      "Veghel",
+      "Arkel",
+      "Schiedam",
+      "Spijkenisse",
+      "Goirle",
+      "Stadskanaal",
+      "Bijlmer",
+      "Istanbul",
+      "Almere",
+      "Helmond"
+    ];
+    const giftOptions = [
+      { id: "flight", title: "De vlucht" },
+      { id: "stay", title: "Het verblijf" },
+      { id: "food", title: "Al het eten en drinken" },
+      { id: "activities", title: "Alle activiteiten" },
+      { id: "cash", title: "500 euro zakgeld" },
+      { id: "invite", title: "De optie om 1 iemand extra te laten invliegen" }
+    ];
+
+    const termsClauses = [
+      "1. Algemeen: deze voorwaarden bestaan vooral om indrukwekkend lang te lijken.",
+      "2. Door mee te doen verklaar je akkoord te gaan met alle leuke, stomme en onvermijdelijke randvoorwaarden.",
+      "3. Het weekend wordt uitgevoerd op basis van beschikbaarheid, humeur en de stand van de zon.",
+      "4. De aanbieder behoudt zich het recht voor om spontaan koffie, water of paniek toe te voegen.",
+      "5. Alle beloftes zijn met een knipoog gedaan en mogen dus ook met een knipoog gelezen worden.",
+      "6. Aan deze voorwaarden kunnen geen rechten worden ontleend, behalve als het grappig uitkomt.",
+      "7. Overmacht omvat onder meer regen, wind, file, vergeten opladers en slecht gekozen zinnen.",
+      "8. Vertragingen kunnen ontstaan door douane, verkeer, koffiepauzes of iemand die zegt: 'nog één ding'.",
+      "9. Het reisprogramma kan onderweg licht, middelmatig of totaal ontsporen.",
+      "10. Eten en drinken zijn afhankelijk van verkrijgbaarheid, trek en de mate van chaos.",
+      "11. De aanbieder is niet aansprakelijk voor teveel enthousiasme, te weinig slaap of verkeerde verwachtingen.",
+      "12. Toegang tot activiteiten kan op ieder moment worden geweigerd door de werkelijkheid.",
+      "13. Alle genoemde bedragen zijn ter indicatie, als grap of omdat het mooier klonk.",
+      "14. Zakgeld is nooit meer dan de situatie toelaat en meestal minder dan je hoopt.",
+      "15. Het weer kan niet worden gegarandeerd, zelfs niet met extra aardig vragen.",
+      "16. In geval van discussie geldt dat de toon vriendelijk moet blijven, tenzij je tikt op een toetsenbord.",
+      "17. Foto's, filmpjes en opmerkingen kunnen later tegen je gebruikt worden in groepsapps.",
+      "18. Kleine lettertjes blijven klein, ook wanneer ze te lang worden voor één scherm.",
+      "19. De onderhavige bepalingen zijn uitsluitend bedoeld voor decoratieve juridische sfeer.",
+      "20. Eventuele winst of glorie is niet overdraagbaar, niet inwisselbaar en meestal tijdelijk.",
+      "21. De eindbestemming kan onderweg worden aangepast als iemand een beter idee heeft.",
+      "22. Uitspraken als 'komt goed' vormen geen harde garantie en dienen vooral sociaal te klinken.",
+      "23. De aanbieder mag zonder waarschuwing extra kaas, snacks of ongemakkelijke stiltes toevoegen.",
+      "24. Bagage, rugzakken en emotionele ballast zijn volledig voor eigen risico.",
+      "25. Het dragen van slippers, sokken in sandalen of andere meningsverschillen blijft toegestaan.",
+      "26. Iedere vorm van romantiek, rivaliteit of groepsdynamiek kan de planning beïnvloeden.",
+      "27. Opmerkingen over routes, afstanden en 'had ook dichterbij gekund' worden vriendelijk genegeerd.",
+      "28. Het programma kan worden onderbroken voor toiletbezoek, foto’s, gekibbel of extreem belangrijk eten.",
+      "29. De aanbieder mag per direct de volgorde van activiteiten wijzigen zonder dat iemand daar iets van vindt.",
+      "30. Eventuele souvenirs zijn symbolisch, ironisch of uitsluitend existentieel van aard.",
+      "31. De consument verklaart dat hij begrijpt dat dit een grap is, maar wel een zorgvuldig uitgevoerde grap.",
+      "32. Het ontbreken van een handtekening maakt de sfeer niet minder bindend in morele zin.",
+      "33. Klachten dienen binnen een onredelijke termijn en bij voorkeur nooit te worden ingediend.",
+      "34. Er wordt geen garantie gegeven op harmonie, punctualiteit of gelijke verdeling van snacks.",
+      "35. De aanbieder is niet verantwoordelijk voor spontane oneensheid over spelletjes, eten of muziek.",
+      "36. Iedere vergelijking met eerdere vakanties is op eigen risico en kan gevoelens van nostalgie oproepen.",
+      "37. De aanbieder behoudt zich het recht voor om op elk moment te zeggen: 'dit is toch echt top'.",
+      "38. Wordt er toch gezeurd, dan kan het programma worden uitgebreid met een verplichte glimlach.",
+      "39. Ondersteuning door derden, waaronder vrienden, familie en willekeurige medereizigers, is optioneel.",
+      "40. De wet van Murphy blijft te allen tijde van toepassing, ook als niemand daarom heeft gevraagd.",
+      "41. De kans op sarcasme neemt toe naarmate deze lijst langer wordt.",
+      "42. Verzoeken om samenvatting worden afgewezen omdat de charme van algemene voorwaarden juist zit in de lengte.",
+      "43. De aanbieder mag af en toe doen alsof dit document belangrijk is, puur voor de show.",
+      "44. Alle genoemde referenties aan 'normaal' zijn slechts een ruwe poging tot stabiliteit.",
+      "45. Veiligheid, plezier en redelijkheid worden nagestreefd, maar niet juridisch gegarandeerd.",
+      "46. Indien één bepaling niet werkt, blijven de overige bepalingen in geest en grap gewoon bestaan.",
+      "47. Het accepteren van deze voorwaarden geeft vooral aan dat je ver genoeg bent gekomen om het te lezen.",
+      "48. Eventuele prijzen, tijden, routes of plannen kunnen worden vervangen door beter klinkende alternatieven.",
+      "49. Aanvullende instructies kunnen mondeling, per rooksignaal of via de groepsapp worden gecommuniceerd.",
+      "50. De aanbieder is niet aansprakelijk voor het ontstaan van buikpijn van het lachen.",
+      "51. Dit document is een knipoog, geen contract, maar wel een heel lange knipoog.",
+      "52. Alles wat niet expliciet is toegezegd, blijft vermoedelijk onvoorzien of onbepaald.",
+      "53. De finale handeling bestaat uit kijken naar het kruisje en vervolgens het kruisje bewonderen.",
+      "54. Wie deze lijst tot hier heeft gelezen, verdient op z'n minst een mentale sticker.",
+      "55. De aanbieder mag bij uitzondering ook zelf lachen om zijn eigen voorwaarden.",
+      "56. Eventuele rechtsgeldigheid eindigt waar de grap begint en omgekeerd.",
+      "57. Het weekend kan in de praktijk leuker blijken dan deze voorwaarden suggereren.",
+      "58. Zodra het vliegtuig vertrekt, vervagen alle discussies over andere opties vanzelf.",
+      "59. Het sluiten van de browser betekent niet dat deze voorwaarden minder overdreven waren.",
+      "60. Einde van de algemene voorwaarden, voorlopig dan. Maar natuurlijk niet echt."
+    ];
+
+    const state = {
+      view: "start",
+      companions: new Set(),
+      bonusChoice: null,
+      selectedCity: null
+    };
+
+    const treeEl = document.getElementById("tree");
+    const zoomShell = document.getElementById("zoomShell");
+
+    function resetTree() {
+      state.view = "start";
+      state.companions = new Set();
+      state.bonusChoice = null;
+      state.selectedCity = null;
+      renderTree();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderTree() {
+      treeEl.innerHTML = "";
+      const node = document.createElement("section");
+      node.className = "node";
+      node.innerHTML = renderContent();
+      treeEl.appendChild(node);
+      zoomShell.style.transform = "scale(1)";
+      bindActions(node);
+    }
+
+    function renderContent() {
+      if (state.view === "start") {
+        return `
+          <span class="node-label">Start</span>
+          <h2 class="question">Zou je een weekend weg willen?</h2>
+          <p class="small">Kies één antwoord. Dit is nu even rechttoe rechtaan.</p>
+          <div class="options">
+            <button class="option primary" data-action="yes">
+              <span class="option-title">Ja</span>
+              <span class="option-sub">Klinkt goed.</span>
+            </button>
+            <button class="option primary" data-action="no">
+              <span class="option-title">Nee</span>
+              <span class="option-sub">Lekker thuis blijven.</span>
+            </button>
+            <button class="option primary" data-action="depends">
+              <span class="option-title">Ligt eraan met wie</span>
+              <span class="option-sub">Gezelschap maakt alles beter of slechter.</span>
+            </button>
+          </div>
+        `;
+      }
+
+      if (state.view === "no") {
+        return `
+          <span class="node-label">Antwoord</span>
+          <h2 class="question">Oke dan, geniet nog van je verjaardag</h2>
+          <p class="small">Missie afgevinkt. Geen verdere complicaties.</p>
+          <div class="result-box">Je hebt nee gekozen. Dat is ook een keuze.</div>
+          <div class="action-row">
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "yes") {
+        return `
+          <span class="node-label">Antwoord</span>
+          <h2 class="question">Geheel verzorgd weekend Leerdam met helemaal niemand</h2>
+          <p class="small">Goed voor wat zelfbezinning.</p>
+          <div class="result-box">Even helemaal weg, helemaal alleen, helemaal verzorgd.</div>
+          <div class="action-row">
+            <button class="action-btn" data-action="companions">of wil je toch liever een gezelschap kiezen?</button>
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "companions") {
+        const selectedCount = state.companions.size;
+        return `
+          <span class="node-label">Gezelschap</span>
+          <h2 class="question">Wie neem je mee?</h2>
+          <p class="small">Tik meerdere vakjes aan. Als je ze allemaal kiest, mag je door.</p>
+          <div class="options">
+            ${companionNames.map((name) => `
+              <button class="option multi-choice ${state.companions.has(name) ? "selected" : ""}" data-companion="${name}">
+                <span class="option-title"><span class="checkbox-box" aria-hidden="true"></span>${name}</span>
+                <span class="option-sub">${state.companions.has(name) ? "Gekozen" : "Nog niet gekozen"}</span>
+              </button>
+            `).join("")}
+          </div>
+          <div class="action-row">
+            <button class="action-btn" data-action="companions-continue">Doorgaan</button>
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+          <div class="result-box">Gekozen: ${selectedCount} van ${companionNames.length}</div>
+        `;
+      }
+
+      if (state.view === "lul") {
+        return `
+          <span class="node-label">Fout</span>
+          <div class="result-box big">LUL</div>
+          <div class="action-row">
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "bonus") {
+        return `
+          <span class="node-label">Bonusvraag</span>
+          <h2 class="question">Wie vind jij eigenlijk de knapste van 4?</h2>
+          <p class="small">Eerlijk antwoorden. We klikken nergens omheen.</p>
+          <div class="bonus-grid">
+            ${bonusNames.map((name) => `
+              <button class="option single-choice bonus-option ${state.bonusChoice === name ? "selected" : ""}" data-bonus="${name}">
+                <span class="option-title"><span class="checkbox-box" aria-hidden="true"></span>${name}</span>
+                <span class="option-sub">Kies deze persoon</span>
+              </button>
+            `).join("")}
+          </div>
+          <div class="action-row">
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "bonus-result") {
+        const isMarijn = state.bonusChoice === "Marijn";
+        return `
+          <span class="node-label">Uitkomst</span>
+          <h2 class="question">${state.bonusChoice}</h2>
+          <div class="result-box">
+            ${isMarijn
+              ? "Gefeliciteerd: een waardebon van heel veel geld bij Specsavers. Naar aanleiding van je antwoord lijkt het erop dat je aan beide ogen -5 hebt."
+              : "Uitstekende keuze, de makers van deze site en talloze vrouwen zijn het met je eens."
+            }
+          </div>
+          <div class="action-row">
+            <button class="action-btn" data-action="bonus-continue">Verder naar de steden</button>
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "city") {
+        return `
+          <span class="node-label">Bestemming</span>
+          <h2 class="question">Waar wil je dat dit prachtige weekend je brengt?</h2>
+          <p class="small">Kies precies één stad.</p>
+          <div class="options">
+            ${cityOptions.map((city) => `
+              <button class="option single-choice ${state.selectedCity === city ? "selected" : ""}" data-city="${city}">
+                <span class="option-title"><span class="checkbox-box" aria-hidden="true"></span>${city}</span>
+                <span class="option-sub">Selecteer deze bestemming</span>
+              </button>
+            `).join("")}
+          </div>
+          <div class="action-row">
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "city-result") {
+        return `
+          <span class="node-label">Uitkomst</span>
+          <h2 class="question">${state.selectedCity}</h2>
+          <div class="result-box">Jij hebt zelfs meer smaak in racketsport dan in weekendbestemmingen.</div>
+          <div class="action-row">
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "istanbul-gifts") {
+        return `
+          <span class="node-label">Istanbul</span>
+          <h2 class="question">Kies wat hij als cadeau krijgt</h2>
+          <div class="gift-grid">
+            ${giftOptions.map((gift) => `
+              <button class="option single-choice gift-option" data-gift="${gift.id}">
+                <span class="option-title">${gift.title}</span>
+              </button>
+            `).join("")}
+          </div>
+          <div class="action-row">
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "gift-error") {
+        return `
+          <span class="node-label">404</span>
+          <div class="result-box big">404</div>
+          <div class="flight-message">er is iets misgegaan, kies maar een nieuwe</div>
+          <div class="action-row">
+            <button class="action-btn" data-action="back-to-gifts">probeer opnieuw</button>
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "invite-warning") {
+        return `
+          <span class="node-label">Extra persoon</span>
+          <div class="result-box">je kan wel een weekend zonder haar, kies maar opnieuw</div>
+          <div class="action-row">
+            <button class="action-btn" data-action="back-to-gifts">probeer opnieuw</button>
+            <button class="action-btn alt" data-action="back">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "flight") {
+        return `
+          <span class="node-label">Vlucht</span>
+          <h2 class="question">Amsterdam naar Istanbul</h2>
+          <div class="scene">
+            <div class="scene-title">Je moet gewoon naar Istanbul</div>
+            <div class="globe-wrap">
+              <svg class="globe-svg" viewBox="0 0 800 520" aria-hidden="true">
+                <defs>
+                  <radialGradient id="oceanGrad" cx="42%" cy="32%" r="72%">
+                    <stop offset="0%" stop-color="#5aaeff" />
+                    <stop offset="55%" stop-color="#1a5a92" />
+                    <stop offset="100%" stop-color="#0c2a46" />
+                  </radialGradient>
+                  <radialGradient id="globeShade" cx="34%" cy="26%" r="72%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22" />
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+                <ellipse cx="400" cy="270" rx="250" ry="210" fill="url(#oceanGrad)" />
+                <ellipse cx="400" cy="270" rx="250" ry="210" fill="url(#globeShade)" />
+                <g opacity="0.75" stroke="rgba(255,255,255,0.28)" stroke-width="1">
+                  <path d="M200 260H600" />
+                  <path d="M218 205H582" />
+                  <path d="M218 315H582" />
+                  <path d="M265 150V390" />
+                  <path d="M340 120V418" />
+                  <path d="M400 110V430" />
+                  <path d="M465 120V418" />
+                  <path d="M535 150V390" />
+                </g>
+                <path d="M210 184
+                         C250 160, 280 162, 315 176
+                         C347 190, 360 185, 392 170
+                         C425 154, 450 154, 485 167
+                         C507 175, 530 184, 544 198
+                         C556 208, 553 220, 540 228
+                         C525 237, 507 239, 488 245
+                         C465 252, 447 272, 427 285
+                         C402 300, 375 303, 352 296
+                         C325 287, 305 278, 283 277
+                         C256 276, 232 270, 218 254
+                         C204 238, 199 214, 210 184Z"
+                      fill="#6fbe66" opacity="0.88" />
+                <path d="M452 214
+                         C468 202, 492 197, 507 204
+                         C520 210, 521 225, 510 236
+                         C497 249, 478 248, 463 242
+                         C453 238, 445 224, 452 214Z"
+                      fill="#5f9d4f" opacity="0.96" />
+                <path d="M335 338
+                         C347 326, 366 323, 382 330
+                         C397 336, 400 348, 390 358
+                         C377 371, 355 371, 342 362
+                         C332 355, 326 347, 335 338Z"
+                      fill="#76c565" opacity="0.9" />
+                <path d="M228 240
+                         C240 232, 249 230, 260 234
+                         C268 237, 269 246, 261 252
+                         C252 259, 241 257, 232 252
+                         C226 249, 223 244, 228 240Z"
+                      fill="#7ac96d" opacity="0.95" />
+                <path d="M239 202
+                         C274 182, 303 176, 338 182"
+                      fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="4" stroke-dasharray="9 9" />
+                <path d="M338 182
+                         C384 187, 427 208, 470 224
+                         C500 236, 521 243, 537 249"
+                      fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="4" stroke-dasharray="9 9" />
+              </svg>
+              <div class="plane">✈</div>
+              <div class="fireworks">
+                <div class="burst one"></div>
+                <div class="burst two"></div>
+                <div class="burst three"></div>
+                <div class="burst four"></div>
+              </div>
+            </div>
+          </div>
+          <div class="flight-message">Gefeliciteerd, wij nemen je mee op een vooralsnog grotendeels onverzorgd weekend naar Istanbul, maar de vlucht wordt in ieder geval geregeld.</div>
+          <div class="action-row">
+            <button class="action-btn" data-action="terms">hier teken ik wel voor</button>
+            <button class="action-btn alt" data-action="back-to-gifts">ander antwoord kiezen?</button>
+          </div>
+        `;
+      }
+
+      if (state.view === "terms") {
+        return `
+          <span class="node-label">Algemene voorwaarden</span>
+          <div class="terms-shell">
+            <div class="terms-top">
+              <button class="action-btn" data-action="goto-cross">naar het kruisje</button>
+            </div>
+            <div class="terms-list">
+              ${termsClauses.map((clause) => `<div class="term-item">${clause}</div>`).join("")}
+            </div>
+            <div class="signature-area" id="cross-anchor">
+              <div class="signature-arrow">tekenen bij het kruisje<br/>↓</div>
+              <div class="signature-box">
+                <button class="signature-field" aria-label="Ondertekenen" data-action="sign">
+                  <div class="signature-cross">✕</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.view === "celebration") {
+        return `
+          <div class="celebration">
+            <div class="celebration-card">
+              <h2>VAN HARTE AMICE</h2>
+              <p>we gaan weer een mooi avontuur tegemoet</p>
+            </div>
+          </div>
+        `;
+      }
+
+      return "";
+    }
+
+    function bindActions(root) {
+      root.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.action;
+
+          if (action === "yes") {
+            state.view = "yes";
+          } else if (action === "no") {
+            state.view = "no";
+          } else if (action === "depends") {
+            state.view = "companions";
+            state.companions = new Set();
+            state.bonusChoice = null;
+            state.selectedCity = null;
+          } else if (action === "companions") {
+            state.view = "companions";
+          } else if (action === "companions-continue") {
+            if (state.companions.size === companionNames.length) {
+              state.view = "bonus";
+            } else {
+              state.view = "lul";
+            }
+          } else if (action === "bonus-continue") {
+            state.view = "city";
+          } else if (action === "back-to-gifts") {
+            state.view = "istanbul-gifts";
+          } else if (action === "terms") {
+            state.view = "terms";
+          } else if (action === "goto-cross") {
+            const anchor = document.getElementById("cross-anchor");
+            if (anchor) {
+              anchor.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            return;
+          } else if (action === "sign") {
+            state.view = "celebration";
+          } else if (action === "back") {
+            if (state.view === "yes" || state.view === "no") {
+              state.view = "start";
+            } else if (state.view === "companions") {
+              state.view = "start";
+              state.companions = new Set();
+              state.bonusChoice = null;
+              state.selectedCity = null;
+            } else if (state.view === "lul") {
+              state.view = "companions";
+            } else if (state.view === "bonus-result") {
+              state.view = "bonus";
+            } else if (state.view === "city-result") {
+              state.view = "city";
+            } else if (state.view === "terms") {
+              state.view = "flight";
+            } else if (state.view === "celebration") {
+              state.view = "terms";
+            } else if (state.view === "istanbul-gifts" || state.view === "gift-error" || state.view === "invite-warning" || state.view === "flight") {
+              state.view = "istanbul-gifts";
+            } else if (state.view === "bonus") {
+              state.view = "companions";
+            } else if (state.view === "city") {
+              state.view = "bonus-result";
+            }
+          }
+
+          renderTree();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+
+      root.querySelectorAll("[data-companion]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const name = button.dataset.companion;
+          if (state.companions.has(name)) {
+            state.companions.delete(name);
+          } else {
+            state.companions.add(name);
+          }
+          renderTree();
+        });
+      });
+
+      root.querySelectorAll("[data-bonus]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.bonusChoice = button.dataset.bonus;
+          state.view = "bonus-result";
+          renderTree();
+        });
+      });
+
+      root.querySelectorAll("[data-city]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.selectedCity = button.dataset.city;
+          state.view = state.selectedCity === "Istanbul" ? "istanbul-gifts" : "city-result";
+          renderTree();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+
+      root.querySelectorAll("[data-gift]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const gift = button.dataset.gift;
+          if (gift === "flight") {
+            state.view = "flight";
+          } else if (gift === "invite") {
+            state.view = "invite-warning";
+          } else {
+            state.view = "gift-error";
+          }
+          renderTree();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+    }
+
+    function createFloatingObjects() {
+      const layer = document.getElementById("floatingLayer");
+      const items = [
+        { type: "ai", label: "ChatGPT", icon: "./icons/chatgpt.png" },
+        { type: "ai", label: "Gemini", icon: "./icons/gemini.png" },
+        { type: "ai", label: "Claude", icon: "./icons/claude.png" },
+        { type: "ai", label: "Copilot", icon: "./icons/copilot.png" },
+        { type: "fun", icon: "🏓", label: "batje" },
+        { type: "fun", icon: "🏓", label: "balletje" },
+        { type: "fun", icon: "☀️", label: "SPF 30" },
+        { type: "fun", icon: "🇮🇹", label: "Italia" },
+        { type: "fun", icon: "🔥", label: "vuurkorf" },
+        { type: "fun", icon: "🏓", label: "smash" },
+        { type: "fun", icon: "☀️", label: "SPF 50" },
+        { type: "fun", icon: "🇮🇹", label: "pasta" },
+        { type: "fun", icon: "☀️", label: "SPF 20" }
+      ];
+
+      for (let i = 0; i < 26; i++) {
+        const el = document.createElement("div");
+        const item = items[i % items.length];
+
+        el.className = "flyer " + (item.type === "ai" ? "ai" : "fun");
+        el.style.top = Math.random() * 92 + "vh";
+        el.style.animationDuration = 15 + Math.random() * 22 + "s";
+        el.style.animationDelay = -Math.random() * 30 + "s";
+        el.style.setProperty("--wave", Math.random() * 220 - 110 + "px");
+        el.style.setProperty("--spin", (Math.random() > 0.5 ? 360 : -360) + "deg");
+        el.style.fontSize = 13 + Math.random() * 13 + "px";
+
+        if (item.type === "ai") {
+          el.innerHTML = `
+            <img class="flyer-icon" src="${item.icon}" alt="${item.label}" />
+            <span class="flyer-text">${item.label}</span>
+          `;
+        } else {
+          el.innerHTML = `
+            <span class="flyer-icon" aria-hidden="true">${item.icon}</span>
+            <span class="flyer-text">${item.label}</span>
+          `;
+        }
+
+        layer.appendChild(el);
+      }
+    }
+
+    createFloatingObjects();
+    renderTree();
+  </script>
+</body>
+</html>
